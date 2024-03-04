@@ -41,6 +41,10 @@ class _SignInState extends State<SignIn> {
     }
   }
 
+  // void navigateToSignUp() {
+  //   Navigator.pushNamed(context, SignUp.route);
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,7 +87,17 @@ class _SignInState extends State<SignIn> {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            // const SizedBox(height: 16),
+            // Align(
+            //   alignment: Alignment.center,
+            //   child: TextButton(
+            //     onPressed: navigateToSignUp,
+            //     child: const Text(
+            //       'Sign Up',
+            //       style: TextStyle(fontSize: 16),
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),

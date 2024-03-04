@@ -24,4 +24,17 @@ class Api {
 
     return response;
   }
+  register(data) async {
+    var fullUrl = 'http://127.0.0.1:8000/api/user/register'; // Update with your register endpoint
+
+    Response response = await http.post(
+      Uri.parse(fullUrl),
+      body: jsonEncode(data),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    return response;
+  }
 }

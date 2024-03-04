@@ -1,6 +1,6 @@
-
 import 'package:desktop_app/HomeScreen.dart';
 import 'package:desktop_app/SignIn.dart';
+// Import the SignUp screen
 import 'package:desktop_app/TierListScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         SignIn.route: (context) => const SignIn(),
+        // SignUp.route: (context) => const SignUp(), // Add SignUp route
         HomeScreen.route: (context) => const HomeScreen(),
         '/tierList': (context) => TierListScreen(tierList: [],),
       },
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
 
 
 // import 'package:desktop_app/HomeScreen.dart';
