@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 void main() {
  // HttpOverrides.global = new MyHttpOverrides();
-  runApp(MaterialApp(home: MyApp()));
+  runApp(MaterialApp(home: MyApp(), debugShowCheckedModeBanner: false,)); // This should hide the debug banner
 }
 
 class MyApp extends StatelessWidget {
@@ -15,6 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false, // Ensure it's set to false here as well
       title: 'Flutter Blog app Symfony Backend ',
       theme: ThemeData(
         primarySwatch: Colors.blue,

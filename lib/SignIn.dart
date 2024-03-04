@@ -1,9 +1,10 @@
 import 'dart:convert';
-
+import 'dart:io';
 import 'package:desktop_app/HomeScreen.dart';
 import 'package:desktop_app/api.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:system_tray/system_tray.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({Key? key}) : super(key: key);
@@ -17,6 +18,45 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  final AppWindow appWindow = AppWindow();
+  final SystemTray systemTray = SystemTray();
+
+  @override
+  void initState() {
+    super.initState();
+    initSystemTray();
+  }
+
+  Future<void> initSystemTray() async {
+    String path = Platform.isWindows ? 'assets/app_icon.ico' : 'assets/app_icon.png';
+
+    // Initialize the system tray.
+    await systemTray.initSystemTray(
+      title: "System Tray",
+      iconPath: path,
+    );
+
+    // Create context menu.
+    final Menu menu = Menu();
+    await menu.buildFrom([
+      MenuItemLabel(label: 'Show', onClicked: (menuItem) => appWindow.show()),
+      MenuItemLabel(label: 'Hide', onClicked: (menuItem) => appWindow.hide()),
+      MenuItemLabel(label: 'Exit', onClicked: (menuItem) => appWindow.close()),
+    ]);
+
+    // Set context menu.
+    await systemTray.setContextMenu(menu);
+
+    // Handle system tray event.
+    systemTray.registerSystemTrayEventHandler((eventName) {
+      debugPrint("eventName: $eventName");
+      if (eventName == kSystemTrayEventClick) {
+        Platform.isWindows ? appWindow.show() : systemTray.popUpContextMenu();
+      } else if (eventName == kSystemTrayEventRightClick) {
+        Platform.isWindows ? systemTray.popUpContextMenu() : appWindow.show();
+      }
+    });
+  }
 
   login() async {
     var data = {
@@ -36,8 +76,11 @@ class _SignInState extends State<SignIn> {
       SharedPreferences localStorage = await SharedPreferences.getInstance();
       localStorage.setString('token', body['token']);
 
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      // Hide the main application window
+      appWindow.hide(); // Assuming `appWindow` is your AppWindow instance
+
+      // Optionally, navigate to the HomeScreen or perform other actions
+      Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
     }
   }
 
@@ -61,13 +104,14 @@ class _SignInState extends State<SignIn> {
               controller: usernameController,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
-                hintText: 'E-mail',
+                hintText: 'Username',
                 labelStyle: TextStyle(fontSize: 18),
               ),
             ),
             const SizedBox(height: 24),
             TextField(
               controller: passwordController,
+              obscureText: true, // This hides the password
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'Password',
