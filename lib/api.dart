@@ -7,7 +7,7 @@ class Api {
   token() async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     var token = localStorage.getString('token');
-    print('Token retrieved from SharedPreferences: $token'); // Add this debug statement
+    // print('Token retrieved from SharedPreferences: $token'); // Add this debug statement
     return '?token=$token';
   }
 

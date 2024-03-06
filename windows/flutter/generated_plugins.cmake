@@ -3,8 +3,10 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  screen_capturer_windows
   system_tray
   tray_manager
+  windows_notification
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
