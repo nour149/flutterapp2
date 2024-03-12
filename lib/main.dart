@@ -3,6 +3,7 @@ import 'package:desktop_app/HomeScreen.dart';
 import 'package:desktop_app/SignIn.dart';
 import 'package:desktop_app/TierListScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:local_notifier/local_notifier.dart';
 import 'dart:async';
 import 'package:screen_capturer/screen_capturer.dart';
 import 'package:windows_notification/windows_notification.dart';
@@ -31,16 +32,63 @@ Future<void> captureScreen() async {
   }
 }
 
-void main() {
+// Function to schedule notification and capture using local_notifier
+Future<void> scheduleCaptureAndNotificationWithLocalNotifier() async {
+  // Define the notification
+  LocalNotification notification = LocalNotification(
+    title: "Screenshot Reminder",
+    body: "A screenshot will be taken in 1 minute.",
+  );
+
+  // Define the callbacks
+notification.onShow = () {
+  print('onShow ${notification.identifier}');
+};
+notification.onClose = (closeReason) {
+  // Only supported on windows, other platforms closeReason is always unknown.
+  switch (closeReason) {
+    case LocalNotificationCloseReason.userCanceled:
+      print('User canceled ${notification.identifier}');
+      break;
+    case LocalNotificationCloseReason.timedOut:
+      print('Notification ${notification.identifier} timed out');
+      break;
+    default:
+      print('Unknown close reason for ${notification.identifier}');
+  }
+};
+notification.onClick = () {
+  print('onClick ${notification.identifier}');
+};
+notification.onClickAction = (actionIndex) {
+  print('onClickAction ${notification.identifier} - $actionIndex');
+};
+
+  // Show the notification
+  await notification.show();
+
+  // Wait for 1 minute before capturing
+  await Future.delayed(const Duration(minutes: 1));
+
+  await captureScreen();
+}
+
+
+
+Future<void> main() async {
   // HttpOverrides.global = new MyHttpOverrides();
   runApp(MaterialApp(
     home: MyApp(),
     debugShowCheckedModeBanner: false,
   ));
 
+  await localNotifier.setup(
+    appName: 'Flutter APP', // Replace with your app's name
+  );
+
   // Schedule automatic screen capture every 10 minutes
-  Timer.periodic(const Duration(seconds: 600), (_) async {
-    await captureScreen();
+  Timer.periodic(const Duration(seconds: 60), (_) async {
+    await scheduleCaptureAndNotificationWithLocalNotifier();
   });
 }
 

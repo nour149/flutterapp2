@@ -3,6 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  local_notifier
   screen_capturer_linux
   system_tray
   tray_manager
